@@ -1,0 +1,32 @@
+{% extends 'base.html' %}{% block title %} 404 | Posture Buddy {% endblock %}
+{% block nav %} 
+    <a href="/" class="text-gray-300 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+        
+    <a href="/presentation" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Live</a>
+
+    <a href="/upload" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Upload</a>
+
+    <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Calendar</a> 
+{% endblock %}
+
+{% block body %}
+
+<div class="text-white min-h-screen flex items-center" style="background-color: var(--nord0);">
+  <div class="container mx-auto p-4 flex flex-wrap items-center">
+    <div class="w-full md:w-5/12 text-center p-4">
+      <img class="ml-20" src="static/img/magnifying-glass.png" alt="Not Found" />
+    </div>
+    <div class="w-full md:w-7/12 text-center md:text-left p-4">
+      <div class="text-6xl font-medium">404</div>
+      <div class="text-xl md:text-3xl font-medium mb-3">
+        Oops. This page has gone missing.
+      </div>
+      <div class="text-lg mb-8">
+        You may have mistyped the address or the page may have moved.
+      </div>
+      <a href="/" class="border border-white rounded hover:bg-white hover:text-black p-2.5">Go Home</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
