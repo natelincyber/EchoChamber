@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echo Chamber Analyzer</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* SVG Background */
+        .background-container {
+            position: fixed;
+            inset: 0;
+            z-index: -10;
+            overflow: hidden;
+            background: linear-gradient(to bottom right, #f0f9ff, #f5f3ff);
+        }
+        
+        .parallax-element {
+            position: absolute;
+            opacity: 0.1;
+            transition: transform 0.1s linear;
+        }
+        
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            opacity: 0.05;
+        }
+        
+        /* Navbar Styles */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: rgba(255, 255, 255, 0.9);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #3498db;
+        }
+        
+        /* Content Sections */
+        section {
+            padding: 120px 50px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(2px);
+            margin-top: 60px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: #34495e;
+        }
+        
+        /* Features Section */
+        .features h2 {
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .feature-item {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        
+        /* CTA Section */
+        .cta {
+            text-align: center;
+            background-color: rgba(52, 152, 219, 0.8);
+            color: white;
+        }
+        
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: white;
+            color: #3498db;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: #2c3e50;
+            color: white;
+            transform: scale(1.05);
+        }
+        .chrome-extension {
+            padding: 80px 50px;
+            background-color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+        }
+        
+        .chrome-extension h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        .extension-card {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        
+        .extension-features {
+            margin: 30px 0;
+        }
+        
+        .extension-feature {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .extension-feature .checkmark {
+            color: #3498db;
+            font-size: 1.5rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .extension-download {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+            border: 2px solid #3498db;
+        }
+        
+        .extension-download:hover {
+            background-color: white;
+            color: #3498db;
+            transform: translateY(-3px);
+        }
+        
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #3498db, transparent);
+            margin: 40px 0;
+        }
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG Background -->
+    <div class="background-container" id="backgroundContainer">
+        <!-- Large triangles -->
+        <div class="parallax-element" style="top: -5%; left: -5%; width: 24rem; height: 24rem;" data-speed="0.05" data-rotation="0.02">
+            <svg viewBox="0 0 100 100" class="w-full h-full fill-blue-500">
+                <polygon points="0,0 100,0 50,100" />
+            </svg>
+        </div>
+
+        <div class="parallax-element" style="top: 25%; right: -5%; width: 20rem; height: 20rem;" data-speed="0.08" data-rotation="-0.03">
+            <svg viewBox="0 0 100 100" class="w-full h-full fill-purple-500">
+                <polygon points="50,0 100,100 0,100" />
+            </svg>
+        </div>
+
+        <!-- Circles -->
+        <div class="parallax-element" style="top: 33%; left: 25%; width: 16rem; height: 16rem;" data-speed="0.1" data-rotation="0.05">
+            <svg viewBox="0 0 100 100" class="w-full h-full fill-blue-400">
+                <circle cx="50" cy="50" r="50" />
+            </svg>
+        </div>
+
+        <div class="parallax-element" style="bottom: 25%; right: 33%; width: 12rem; height: 12rem;" data-speed="0.15" data-rotation="-0.04">
+            <svg viewBox="0 0 100 100" class="w-full h-full fill-purple-400">
+                <circle cx="50" cy="50" r="50" />
+            </svg>
+        </div>
+
+        <!-- Squares -->
+        <div class="parallax-element" style="top: 50%; left: 33%; width: 14rem; height: 14rem;" data-speed="0.12" data-rotation="0.06">
+            <svg viewBox="0 0 100 100" class="w-full h-full fill-blue-300">
+                <rect width="100" height="100" />
+            </svg>
+        </div>
+
+        <div class="parallax-element" style="bottom: 33%; left: 2.5%; width: 10rem; height: 10rem;" data-speed="0.07" data-rotation="-0.02">
+            <svg viewBox="0 0 100 100" class="w-full h-full fill-purple-300">
+                <rect width="100" height="100" />
+            </svg>
+        </div>
+
+        <!-- Hexagons -->
+        <div class="parallax-element" style="top: 2.5%; right: 25%; width: 18rem; height: 18rem;" data-speed="0.09" data-rotation="0.04">
+            <svg viewBox="0 0 100 100" class="w-full h-full fill-blue-600">
+                <polygon points="50,0 100,25 100,75 50,100 0,75 0,25" />
+            </svg>
+        </div>
+
+        <div class="parallax-element" style="bottom: 2.5%; right: 2.5%; width: 15rem; height: 15rem;" data-speed="0.14" data-rotation="-0.05">
+            <svg viewBox="0 0 100 100" class="w-full h-full fill-purple-600">
+                <polygon points="50,0 100,25 100,75 50,100 0,75 0,25" />
+            </svg>
+        </div>
+
+        <!-- Small geometric elements -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const container = document.getElementById('backgroundContainer');
+                for (let i = 0; i < 20; i++) {
+                    const element = document.createElement('div');
+                    element.className = 'parallax-element';
+                    element.style.opacity = '0.05';
+                    element.style.top = `${Math.random() * 100}%`;
+                    element.style.left = `${Math.random() * 100}%`;
+                    element.style.width = `${Math.random() * 30 + 10}px`;
+                    element.style.height = `${Math.random() * 30 + 10}px`;
+                    element.setAttribute('data-speed', Math.random() * 0.2);
+                    element.setAttribute('data-rotation', (Math.random() - 0.5) * 0.1);
+                    
+                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.setAttribute('viewBox', '0 0 100 100');
+                    svg.classList.add('w-full', 'h-full');
+                    
+                    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                    if (i % 3 === 0) {
+                        polygon.setAttribute('points', '0,0 100,0 50,100');
+                    } else if (i % 3 === 1) {
+                        polygon.setAttribute('points', '50,0 100,100 0,100');
+                    } else {
+                        polygon.setAttribute('points', '50,0 100,25 100,75 50,100 0,75 0,25');
+                    }
+                    polygon.setAttribute('fill', i % 2 === 0 ? '#3b82f6' : '#8b5cf6');
+                    
+                    svg.appendChild(polygon);
+                    element.appendChild(svg);
+                    container.appendChild(element);
+                }
+            });
+        </script>
+
+        <!-- Grid pattern overlay -->
+        <div class="grid-overlay">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#5b21b6" stroke-width="0.5" />
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">Echo Chamber Analyzer</div>
+        <div class="nav-links">
+            <a href="#">Dashboard</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+            <a href="#">Chrome Extension</a>
+            <a href="#">Login / Sign Up</a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Discover Your Echo Chamber</h1>
+        <p>Visualize your information bubble and explore diverse perspectives to broaden your horizons.</p>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features">
+        <h2>Features</h2>
+        <div class="feature-item">
+            <h3>Analyze Your Feed</h3>
+            <p>Get insights into the diversity of your news sources and social media feeds.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Break Out of Your Bubble</h3>
+            <p>Discover alternative viewpoints and sources you might be missing.</p>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta">
+        <h2>Ready to Explore Beyond Your Bubble?</h2>
+        <a href="#" class="cta-button">Login / Sign Up</a>
+    </section>
+
+    <section class="chrome-extension">
+        <div class="extension-card">
+            <h2>Analyze Your Browsing in Real-Time</h2>
+            <p>Our Chrome extension monitors your news and social media consumption in real-time, providing instant feedback on your information diet and helping you break out of your echo chamber.</p>
+            
+            <div class="extension-features">
+                <div class="extension-feature">
+                    <span class="checkmark">✓</span>
+                    <div>Real-time analysis of news sources and social media content</div>
+                </div>
+                <div class="extension-feature">
+                    <span class="checkmark">✓</span>
+                    <div>Suggestions for alternative viewpoints and sources</div>
+                </div>
+                <div class="extension-feature">
+                    <span class="checkmark">✓</span>
+                    <div>Privacy-focused design that keeps your data secure</div>
+                </div>
+                <div class="extension-feature">
+                    <span class="checkmark">✓</span>
+                    <div>Seamless integration with your Echo Chamber Analyzer account</div>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <a href="#" class="extension-download">Download Chrome Extension</a>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2023 Echo Chamber Analyzer. All rights reserved.</p>
+    </footer>
+    
+    <!-- Parallax Effect Script -->
+    <script>
+        document.addEventListener('scroll', function() {
+            const scrollY = window.scrollY;
+            const elements = document.querySelectorAll('.parallax-element');
+            
+            elements.forEach(element => {
+                const speed = parseFloat(element.getAttribute('data-speed')) || 0;
+                const rotation = parseFloat(element.getAttribute('data-rotation')) || 0;
+                
+                // Calculate new positions and rotation
+                const offsetY = scrollY * speed;
+                const rotate = scrollY * rotation;
+                
+                // Apply transformations
+                element.style.transform = `translateY(${offsetY}px) rotate(${rotate}deg)`;
+            });
+        });
+    </script>
+</body>
+</html>

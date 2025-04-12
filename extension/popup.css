@@ -1,0 +1,95 @@
+body {
+    width: 300px;
+    padding: 0;
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+  
+  .container {
+    padding: 15px;
+  }
+  
+  h1 {
+    font-size: 18px;
+    margin: 0 0 15px 0;
+    color: #1da1f2;
+  }
+  
+  .bias-meter {
+    margin: 15px 0;
+  }
+  
+  .meter-bar {
+    height: 20px;
+    background: linear-gradient(to right, #4285F4, #9B72CB, #EA4335);
+    border-radius: 10px;
+    transition: width 0.5s;
+  }
+  
+  .meter-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+  }
+  
+  .score {
+    text-align: center;
+    font-size: 16px;
+    margin: 15px 0;
+  }
+  
+  #scoreValue {
+    font-weight: bold;
+    font-size: 24px;
+  }
+  
+  .blindspots {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+  }
+  
+  .suggestion {
+    background: #f7f7f7;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  
+  .suggestion .source {
+    font-weight: bold;
+    color: #1da1f2;
+    margin-bottom: 5px;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  button {
+    flex: 1;
+    background: #1da1f2;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  button:hover {
+    background: #1991db;
+  }
+  
+  button#demoBtn {
+    background: #666;
+  }
+  
+  .hidden {
+    display: none;
+  }

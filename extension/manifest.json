@@ -1,0 +1,20 @@
+{
+    "manifest_version": 3,
+    "name": "EchoChamber",
+    "version": "1.0",
+    "description": "Twitter scraper for console output",
+    "permissions": ["activeTab"],
+    "host_permissions": ["*://twitter.com/*", "*://x.com/*"],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["*://twitter.com/*", "*://x.com/*"],
+        "js": ["content.js"]
+      }
+    ],
+    "action": {
+      "default_popup": "/popup.html"
+    }
+  }

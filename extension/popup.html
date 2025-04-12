@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EchoChamber - Twitter Insights</title>
+  <script src="popup.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1da1f2;
+      --primary-dark: #1991db;
+      --background: #ffffff;
+      --text: #0f1419;
+      --text-secondary: #536471;
+      --border: #e1e8ed;
+      --success: #17bf63;
+      --warning: #ffad1f;
+      --error: #e0245e;
+    }
+    
+    body {
+      width: 350px; /* Slightly wider to accommodate new features */
+      padding: 0;
+      margin: 0;
+      font-family: 'Inter', Arial, sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+    }
+    
+    .header {
+      padding: 15px;
+      background-color: var(--primary);
+      color: white;
+      text-align: center;
+      font-weight: 600;
+      font-size: 16px;
+      border-radius: 4px 4px 0 0;
+    }
+    
+    .container {
+      padding: 15px;
+    }
+    
+    .section {
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 15px;
+    }
+    
+    .section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .section-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--primary);
+      font-size: 14px;
+    }
+    
+    button {
+      padding: 10px 15px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    
+    button:hover {
+      background: var(--primary-dark);
+    }
+    
+    button.secondary {
+      background: white;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      margin-top: 8px;
+    }
+    
+    button.secondary:hover {
+      background: #f7f7f7;
+    }
+    
+    button.tertiary {
+      background: white;
+      color: var(--warning);
+      border: 1px solid var(--warning);
+      margin-top: 8px;
+    }
+    
+    button.tertiary:hover {
+      background: #fff8f0;
+    }
+    
+    #status {
+      margin-top: 15px;
+      font-size: 13px;
+      padding: 10px;
+      border-radius: 4px;
+      display: none;
+    }
+    
+    .status-success {
+      background-color: rgba(23, 191, 99, 0.1);
+      color: var(--success);
+      display: block !important;
+    }
+    
+    .status-warning {
+      background-color: rgba(255, 173, 31, 0.1);
+      color: var(--warning);
+      display: block !important;
+    }
+    
+    .status-error {
+      background-color: rgba(224, 36, 94, 0.1);
+      color: var(--error);
+      display: block !important;
+    }
+    
+    .options-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .options-row label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-left: 8px;
+      cursor: pointer;
+    }
+    
+    input[type="checkbox"] {
+      accent-color: var(--primary);
+    }
+    
+    .progress-container {
+      margin-top: 15px;
+      display: none;
+    }
+    
+    .progress-bar {
+      height: 6px;
+      background-color: #e1e8ed;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary);
+      width: 0%;
+      transition: width 0.3s;
+    }
+    
+    .progress-text {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: right;
+      margin-top: 3px;
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .stat-box {
+      background-color: #f7f9fa;
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 16px;
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    
+    .footer {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 10px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .export-options {
+      display: none;
+      margin-top: 10px;
+    }
+    
+    .export-options button {
+      margin-top: 5px;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    EchoChamber Analytics
+  </div>
+  
+  <div class="container">
+    <div class="section">
+      <div class="section-title">Data Collection</div>
+      <button id="scrapeBtn">
+        <span id="scrapeBtnText">Analyze Current Feed</span>
+      </button>
+      <button id="continuousBtn" class="secondary">Start Continuous Analysis</button>
+      <button id="stopContinuousBtn" class="tertiary" style="display:none;">Stop Continuous Analysis</button>
+      
+      <div class="stats-container" id="statsContainer">
+        <div class="stat-box">
+          <div class="stat-value" id="totalTweets">0</div>
+          <div class="stat-label">Tweets Collected</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="lastScraped">-</div>
+          <div class="stat-label">Last Scraped</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">Options</div>
+      <div class="options-row">
+        <input type="checkbox" id="includeReplies" checked>
+        <label for="includeReplies">Include replies</label>
+      </div>
+      <div class="options-row">
+        <input type="checkbox" id="includeRetweets" checked>
+        <label for="includeRetweets">Include retweets</label>
+      </div>
+      <div class="options-row">
+        <input type="checkbox" id="includeEngagement" checked>
+        <label for="includeEngagement">Collect engagement metrics</label>
+      </div>
+      <div class="options-row">
+        <input type="checkbox" id="includeMediaInfo" checked>
+        <label for="includeMediaInfo">Collect media info</label>
+      </div>
+      <div class="options-row">
+        <input type="checkbox" id="includeUserInfo" checked>
+        <label for="includeUserInfo">Collect user info</label>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">Export Data</div>
+      <button id="exportBtn">Export Collected Data</button>
+      <div class="export-options" id="exportOptions">
+        <button id="exportJsonBtn">Export as JSON</button>
+        <button id="exportCsvBtn">Export as CSV</button>
+      </div>
+    </div>
+    
+    <div id="status"></div>
+    
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text">
+        <span id="progressText">0% complete</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    v1.1.0 • Data never leaves your browser
+  </div>
+</body>
+</html>
